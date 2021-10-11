@@ -4,7 +4,7 @@ import os
 from datetime import date, datetime, timedelta
 
 # Create stage table to dump data as is from the CSV files
-# All the columns are 
+# All the columns are in varchar
 employee_stg_ddl = """
 create table if not exists public.employee_stg
 (
@@ -85,8 +85,22 @@ or s.phone_number != e.phone_number
 or cast(s.salary as bigint) != e.salary or cast(s.termination_date as date) != e.termination_date
 or trim(s.status) != e.status or trim(s.gender) != e.gender
 )
+
 insert into public.employee_hist
-select *, current_date as change_captured_date from modified_employees
+select 
+snapshot_date,
+employee_number,
+status,
+first_name,
+last_name,
+gender,
+email,
+phone_number,
+salary,
+termination_date,
+created_date,
+updated_date,
+current_date as change_captured_date from modified_employees
 ;
 """
 
